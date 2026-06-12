@@ -416,13 +416,16 @@
     var ir = img.naturalWidth / img.naturalHeight;
     var cr = cw / ch;
     var dw, dh, dx, dy;
-    if (cr >= 1.05) {
-      // 横長画面: 少し拡大して右端を画面右端に合わせる → 製品(画像中央)が左寄りに、右に常時余白
+    // CSSのレイアウト切替（min-width:1101px + landscape）と必ず同じ条件で判定する
+    var splitLayout = canvas.clientWidth >= 1101 && cr >= 1.05;
+    if (splitLayout) {
+      // 分割構図: 製品(画像中央)をビューポートの30%位置に置き、右をテキスト用余白に
       var scale = 1.18 + state.zoom * 0.05;
-      dh = ch * scale; dw = dh * ir;
-      if (dw < cw) { dw = cw * scale; dh = dw / ir; }
-      dx = cw - dw;                 // 右端基準
-      dy = (ch - dh) * 0.45;        // キャップ上部を切らない縦バランス
+      var coverW = Math.max(cw, ch * ir);   // cover に必要な最小幅
+      dw = coverW * scale; dh = dw / ir;
+      dx = cw * 0.30 - dw * 0.5;            // 画像中央 → 30%位置
+      dx = Math.min(0, Math.max(cw - dw, dx)); // 余白が出ない範囲にクランプ
+      dy = (ch - dh) * 0.42;                // キャップ上部を切らない縦バランス
     } else {
       var scaleM = 1 + state.zoom * 0.08;
       if (cr > ir) { dw = cw * scaleM; dh = dw / ir; }
