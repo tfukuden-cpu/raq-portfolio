@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUMIÈRE — 咲く瞬間を、閉じ込めた。</title>
+<meta name="description" content="開花の瞬間に抽出した植物成分のプレミアムセラム LUMIÈRE。※これはRAQ LLC制作のデモンストレーションLPです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --base: #FFFFFF;        /* ベース 70% */
+    --main: #F4F0EA;        /* メイン 25%: 淡いグレージュ */
+    --accent: #A8853B;      /* アクセント 5%: ゴールド（CTA専用） */
+    --accent-deep: #8C6D2C;
+    --ink: #2B2B2B;
+    --ink-soft: #6E6862;
+    --serif: 'Noto Serif JP', serif;
+    --sans: 'Noto Sans JP', sans-serif;
+    --latin: 'Cormorant Garamond', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--base);
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== ヘッダー ===== */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 5vw;
+    transition: background .5s ease, padding .5s ease, box-shadow .5s ease;
+  }
+  .site-header.scrolled {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 14px 5vw;
+    box-shadow: 0 1px 0 rgba(43, 43, 43, 0.05);
+  }
+  .brand {
+    font-family: var(--latin); font-size: 22px; letter-spacing: 0.35em;
+    color: var(--ink); text-decoration: none;
+  }
+  .header-note { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.1em; }
+
+  /* ===== サイドナビ（ドットメニュー） ===== */
+  .dot-nav {
+    position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+    z-index: 110; display: flex; flex-direction: column; gap: 18px;
+  }
+  .dot-nav a { position: relative; display: block; width: 9px; height: 9px; }
+  .dot-nav a::before {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%; background: #D8D2C8;
+    transition: background .35s ease, transform .35s ease;
+  }
+  .dot-nav a.active::before { background: var(--accent); transform: scale(1.45); }
+  .dot-nav a .label {
+    position: absolute; right: 22px; top: 50%; transform: translateY(-50%) translateX(6px);
+    font-size: 10px; letter-spacing: 0.25em; color: var(--ink-soft);
+    background: rgba(255, 255, 255, 0.85); padding: 4px 10px;
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .dot-nav a:hover .label { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+  /* ===== ステージ: 製品は最後まで固定、カードだけが流れる ===== */
+  .bloom-stage { position: relative; }
+
+  .bloom-bg {
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden; z-index: 1;
+    background: var(--base);
+  }
+  #bloomCanvas { width: 100%; height: 100%; display: block; }
+
+  /* 満開後に舞う花びら */
+  .petals { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.6s ease; }
+  .petals.show { opacity: 1; }
+  .petal {
+    position: absolute; top: -6vh;
+    width: 26px; height: 18px;
+    background: linear-gradient(135deg, #FBF2EE, #F0DFD6);
+    border-radius: 65% 35% 60% 40% / 55% 45% 55% 45%;
+    box-shadow: 0 1px 5px rgba(140, 109, 44, 0.10);
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%   { transform: translate3d(0, -8vh, 0) rotate(0deg); opacity: 0; }
+    8%   { opacity: .85; }
+    90%  { opacity: .85; }
+    100% { transform: translate3d(var(--drift, 8vw), 112vh, 0) rotate(var(--spin, 320deg)); opacity: 0; }
+  }
+
+  .panels { position: relative; z-index: 5; margin-top: -100vh; }
+  .panel {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 0 7vw;
+  }
+  .panel.tall { min-height: 125vh; }
+
+  /* カードは常にすりガラス */
+  .panel-card {
+    width: min(440px, 88vw);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    padding: 40px 38px;
+    box-shadow: 0 1px 0 rgba(43, 43, 43, 0.04);
+  }
+  .panel--left  .panel-card { margin-right: auto; }
+  .panel--right .panel-card { margin-left: auto; }
+
+  /* 横長画面: 製品は左固定・テキストは右カラム。すりガラス箱を廃止し
+     白背景に直接タイポグラフィを置く（箱が主役になるのを防ぐ） */
+  @media (min-width: 1101px) and (orientation: landscape) {
+    .panel { padding-right: 9vw; }
+    .panel--left .panel-card, .panel--right .panel-card {
+      margin-left: auto; margin-right: 0;
+      width: min(430px, 36vw);
+      background: transparent;
+      backdrop-filter: none; -webkit-backdrop-filter: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    .closing-card { text-align: left; }
+    .trust { align-items: flex-start; }
+  }
+
+  .panel .en {
+    font-family: var(--latin); font-size: 13px; letter-spacing: 0.4em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 18px;
+  }
+  .panel h1, .panel h2 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(25px, 3vw, 40px); line-height: 1.6; letter-spacing: 0.12em;
+  }
+  .panel p { margin-top: 20px; font-size: 14px; line-height: 2.0; color: var(--ink-soft); }
+
+  /* 約束カード: ゴールドの罫線が引かれてから数字が出る */
+  .panel .rule {
+    width: 0; height: 1px; background: var(--accent);
+    margin-bottom: 22px;
+  }
+  .panel .num { font-family: var(--latin); font-size: 34px; color: var(--accent); margin-bottom: 10px; }
+  .panel h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(21px, 2.2vw, 28px); letter-spacing: 0.12em; line-height: 1.7; }
+
+  .quote-card blockquote {
+    font-family: var(--serif); font-size: clamp(19px, 2vw, 25px);
+    line-height: 2.0; letter-spacing: 0.14em; font-weight: 300;
+  }
+  .quote-card cite { display: block; margin-top: 24px; font-style: normal; font-size: 12px; color: var(--ink-soft); letter-spacing: 0.2em; }
+
+  .closing-card { text-align: center; }
+  .closing-card .price { margin-top: 28px; font-size: 14px; color: var(--ink-soft); letter-spacing: 0.15em; }
+  .closing-card .price strong { font-family: var(--latin); font-size: 30px; color: var(--ink); font-weight: 500; letter-spacing: 0.05em; }
+  .trust { display: flex; flex-direction: column; gap: 8px; margin-top: 30px; font-size: 12px; color: var(--ink-soft); letter-spacing: 0.1em; }
+
+  .scroll-hint {
+    position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.3em; color: var(--ink-soft);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .scroll-hint::after {
+    content: ''; width: 1px; height: 44px; background: var(--ink-soft);
+    animation: drop 1.8s ease-in-out infinite;
+  }
+  @keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  /* ===== CTAボタン ===== */
+  .cta {
+    position: relative; overflow: hidden;
+    display: inline-block; margin-top: 30px;
+    padding: 18px 52px; min-height: 44px;
+    background: var(--accent); color: #fff;
+    font-family: var(--sans); font-weight: 400; font-size: 15px; letter-spacing: 0.2em;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: letter-spacing .4s ease;
+  }
+  .cta::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--accent-deep);
+    transform: translateX(-101%);
+    transition: transform .45s cubic-bezier(.4, 0, .2, 1);
+  }
+  .cta:hover { letter-spacing: 0.28em; }
+  .cta:hover::after { transform: translateX(0); }
+  .cta span { position: relative; z-index: 1; }
+  .cta-micro { display: block; margin-top: 12px; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.12em; }
+
+  /* ===== フッター ===== */
+  .site-footer {
+    position: relative; z-index: 5;
+    padding: 44px 7vw 36px; text-align: center;
+    font-size: 11px; color: var(--ink-soft); letter-spacing: 0.12em; line-height: 2.2;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+  }
+
+  /* ===== ローディング ===== */
+  #loader {
+    position: fixed; inset: 0; z-index: 200; background: var(--base);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 18px;
+    transition: opacity .6s ease;
+  }
+  #loader .brand-load { font-family: var(--latin); font-size: 26px; letter-spacing: 0.4em; }
+  #loader .bar { width: 160px; height: 1px; background: #E3DDD3; overflow: hidden; }
+  #loader .bar i { display: block; height: 100%; width: 0%; background: var(--accent); transition: width .2s; }
+  #loader.done { opacity: 0; pointer-events: none; }
+
+  /* ===== モバイル ===== */
+  @media (max-width: 768px) {
+    .panel { padding: 0 6vw; }
+    .panel--left .panel-card, .panel--right .panel-card { margin-left: auto; margin-right: auto; }
+    .dot-nav { right: 12px; gap: 14px; }
+    .dot-nav a .label { display: none; }
+    .trust { gap: 10px; }
+    body { font-size: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bloom-bg { position: relative; height: 60vh; }
+    .panels { margin-top: 0; }
+    .panel, .panel.tall { min-height: auto; padding: 60px 7vw; }
+    .scroll-hint, .petals, .dot-nav { display: none; }
+    .panel .rule { width: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="brand-load">LUMIÈRE</div>
+  <div class="bar"><i id="loadBar"></i></div>
+</div>
+
+<header class="site-header" id="siteHeader">
+  <a class="brand" href="#">LUMIÈRE</a>
+  <span class="header-note">DEMO — RAQ LLC PORTFOLIO</span>
+</header>
+
+<nav class="dot-nav" id="dotNav" aria-label="ページ内ナビゲーション"></nav>
+
+<!-- ===== ステージ: ページ全体がひとつの物語 ===== -->
+<div class="bloom-stage" id="bloomStage">
+
+  <div class="bloom-bg">
+    <canvas id="bloomCanvas"></canvas>
+    <div class="petals" id="petals"></div>
+    <div class="scroll-hint" id="scrollHint">SCROLL</div>
+  </div>
+
+  <div class="panels">
+
+    <!-- 開花パート -->
+    <section class="panel panel--left" id="panelFv" data-nav="Top">
+      <div class="panel-card">
+        <div class="en">Premium Botanical Serum</div>
+        <h1>咲く瞬間を、<br>閉じ込めた。</h1>
+        <p>花がもっとも生命力を放つ「開花の瞬間」。<br>その一瞬の成分だけを、一滴に。</p>
+        <a class="cta" href="#closing" data-scroll><span>トライアルを申し込む</span></a>
+        <span class="cta-micro">初回送料無料・いつでも解約可能</span>
+      </div>
+    </section>
+
+    <section class="panel panel--right tall" data-nav="Story">
+      <div class="panel-card">
+        <div class="en">The Moment of Bloom</div>
+        <h2>開花のとき、<br>成分は最大になる。</h2>
+        <p>植物の抗酸化成分は、蕾がほどける瞬間にピークを迎えます。LUMIÈREはその一瞬だけを摘み取る「開花時抽出製法」を採用しました。</p>
+        <p>スクロールとともに、花がひらいていくのをご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="panel panel--left tall">
+      <div class="panel-card">
+        <div class="en">One Drop Philosophy</div>
+        <h2>一滴で、足りる濃度。</h2>
+        <p>水で薄めない原液設計。スポイト一滴に、満開のエネルギーがそのまま入っています。</p>
+        <p>水・アルコール・香料はくわえません。あなたの肌に届くのは、花の成分だけ。</p>
+      </div>
+    </section>
+
+    <section class="panel panel--right tall" id="panelBloomEnd" data-nav="Full Bloom">
+      <div class="panel-card">
+        <div class="en">Full Bloom</div>
+        <h2>満開の美しさを、<br>あなたの肌に。</h2>
+        <p>ここからは、満開の一滴がどう作られているかのお話です。</p>
+      </div>
+    </section>
+
+    <!-- 約束パート -->
+    <section class="panel panel--left" data-nav="Promise">
+      <div class="panel-card">
+        <div class="en">Our Promise</div>
+        <div class="rule"></div>
+        <div class="num">01</div>
+        <h3>開花時抽出製法</h3>
+        <p>開花から24時間以内の花のみを低温抽出。成分値がもっとも高い瞬間を逃しません。すべての成分に、摘み取った日付と産地があります。</p>
+      </div>
+    </section>
+
+    <section class="panel panel--right">
+      <div class="panel-card">
+        <div class="en">Our Promise</div>
+        <div class="rule"></div>
+        <div class="num">02</div>
+        <h3>原液100%設計</h3>
+        <p>水・アルコール・香料無添加。一滴の中身はすべて働く成分です。</p>
+      </div>
+    </section>
+
+    <section class="panel panel--left">
+      <div class="panel-card">
+        <div class="en">Our Promise</div>
+        <div class="rule"></div>
+        <div class="num">03</div>
+        <h3>遮光フロストガラス</h3>
+        <p>光による成分劣化を防ぐ特注ボトル。最後の一滴まで、摘みたての鮮度を。</p>
+      </div>
+    </section>
+
+    <!-- お客様の声 -->
+    <section class="panel panel--right" data-nav="Voice">
+      <div class="panel-card quote-card">
+        <div class="en">Voice</div>
+        <blockquote>「化粧水の前の一滴で、<br>翌朝の肌がまったく違う。」</blockquote>
+        <cite>— ご利用者アンケートより（架空のデモコメントです）</cite>
+      </div>
+    </section>
+
+    <!-- クロージング -->
+    <section class="panel panel--left tall" id="closing" data-nav="Trial">
+      <div class="panel-card closing-card">
+        <div class="en">Trial Set</div>
+        <h2>あなたの肌にも、<br>咲く瞬間を。</h2>
+        <p class="price">7日間トライアルセット <strong>¥1,980</strong>（税込・送料無料）</p>
+        <a class="cta" href="#" onclick="return false;"><span>トライアルを申し込む</span></a>
+        <span class="cta-micro">クレジットカード登録不要・しつこい勧誘はありません</span>
+        <div class="trust">
+          <span>✓ 30日間返金保証</span>
+          <span>✓ 国内工場製造</span>
+          <span>✓ パッチテスト済み</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    LUMIÈRE は実在しない架空のブランドです。<br>
+    本ページは RAQ LLC がスクロール連動演出のデモンストレーションとして制作したポートフォリオ作品です。<br>
+    © RAQ LLC
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  gsap.registerPlugin(ScrollTrigger);
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== Lenis 慣性スムーススクロール =====
+  var lenis = null;
+  if (!reduceMotion && typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // ===== フレーム設定 =====
+  var FRAME_COUNT = 145;
+  var FRAME_PATH = function (i) {
+    return 'assets/frames/frame_' + String(i + 1).padStart(4, '0') + '.webp';
+  };
+
+  var canvas = document.getElementById('bloomCanvas');
+  var ctx = canvas.getContext('2d');
+  var images = new Array(FRAME_COUNT);
+  var loaded = 0;
+  var state = { frame: 0, zoom: 0 }; // zoom: 0→1 でゆっくり寄る
+
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    render();
+  }
+
+  // 描画: デスクトップは製品を左に寄せて右をテキスト用の余白にする。
+  // モバイルは中央 cover。どちらもスロードリーイン付き。
+  function render() {
+    var img = images[Math.round(state.frame)];
+    if (!img || !img.complete || !img.naturalWidth) return;
+    var cw = canvas.width, ch = canvas.height;
+    var ir = img.naturalWidth / img.naturalHeight;
+    var cr = cw / ch;
+    var dw, dh, dx, dy;
+    if (cr >= 1.05) {
+      // 横長画面: 少し拡大して右端を画面右端に合わせる → 製品(画像中央)が左寄りに、右に常時余白
+      var scale = 1.18 + state.zoom * 0.05;
+      dh = ch * scale; dw = dh * ir;
+      if (dw < cw) { dw = cw * scale; dh = dw / ir; }
+      dx = cw - dw;                 // 右端基準
+      dy = (ch - dh) * 0.45;        // キャップ上部を切らない縦バランス
+    } else {
+      var scaleM = 1 + state.zoom * 0.08;
+      if (cr > ir) { dw = cw * scaleM; dh = dw / ir; }
+      else { dh = ch * scaleM; dw = dh * ir; }
+      dx = (cw - dw) / 2;
+      dy = (ch - dh) / 2;
+    }
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  function onFrameLoaded(idx) {
+    loaded++;
+    document.getElementById('loadBar').style.width = (loaded / FRAME_COUNT * 100) + '%';
+    if (loaded === 1) { sizeCanvas(); }
+    if (idx === Math.round(state.frame)) { render(); }
+    if (loaded >= FRAME_COUNT) {
+      document.getElementById('loader').classList.add('done');
+      ScrollTrigger.refresh();
+      render();
+    }
+  }
+
+  for (var i = 0; i < FRAME_COUNT; i++) {
+    (function (idx) {
+      var img = new Image();
+      img.onload = function () { onFrameLoaded(idx); };
+      img.onerror = function () {
+        console.error('frame load failed: ' + FRAME_PATH(idx));
+        onFrameLoaded(idx);
+      };
+      img.src = FRAME_PATH(idx);
+      images[idx] = img;
+    })(i);
+  }
+
+  window.addEventListener('resize', sizeCanvas);
+
+  // ===== 花びらを生成（満開後に表示） =====
+  var petalsBox = document.getElementById('petals');
+  // 花のある左側ゾーンにだけ降らせる（製品やテキストにノイズとして被らないように）
+  var petalLanes = [3, 9, 16, 24, 31];
+  for (var p = 0; p < petalLanes.length; p++) {
+    var el = document.createElement('i');
+    el.className = 'petal';
+    el.style.left = petalLanes[p] + 'vw';
+    el.style.animationDuration = (14 + (p * 2.7) % 7) + 's';
+    el.style.animationDelay = (p * 2.6) + 's';
+    el.style.setProperty('--drift', ((p % 2 ? 1 : -1) * (5 + p)) + 'vw');
+    el.style.setProperty('--spin', (200 + p * 40) + 'deg');
+    el.style.transform = 'scale(' + (0.7 + (p % 4) * 0.15) + ')';
+    petalsBox.appendChild(el);
+  }
+
+  // ===== ドットナビ生成 =====
+  var dotNav = document.getElementById('dotNav');
+  var navTargets = document.querySelectorAll('[data-nav]');
+  var dots = [];
+  navTargets.forEach(function (sec) {
+    var a = document.createElement('a');
+    a.href = '#' + (sec.id || '');
+    var label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = sec.getAttribute('data-nav');
+    a.appendChild(label);
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (lenis) { lenis.scrollTo(sec, { duration: 1.6 }); }
+      else { sec.scrollIntoView({ behavior: 'smooth' }); }
+    });
+    dotNav.appendChild(a);
+    dots.push({ a: a, sec: sec });
+  });
+
+  if (!reduceMotion) {
+    // ===== スクロール ⇔ 開花フレーム同期（満開パネルで完了） =====
+    gsap.to(state, {
+      frame: FRAME_COUNT - 1,
+      ease: 'none',
+      snap: 'frame',
+      scrollTrigger: {
+        trigger: '#bloomStage',
+        start: 'top top',
+        endTrigger: '#panelBloomEnd',
+        end: 'center center',
+        scrub: 0.5,
+        onLeave: function () { petalsBox.classList.add('show'); },
+        onEnterBack: function () { petalsBox.classList.remove('show'); }
+      },
+      onUpdate: render
+    });
+
+    // ===== 背景のスロードリーイン（ページ全体で 0→1） =====
+    gsap.to(state, {
+      zoom: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#bloomStage',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.2
+      },
+      onUpdate: render
+    });
+
+    // ===== カード: 中身が時間差で立ち上がる入場 =====
+    gsap.utils.toArray('.panel-card').forEach(function (card) {
+      var children = card.querySelectorAll(':scope > *');
+      gsap.from(children, {
+        autoAlpha: 0, y: 34, duration: 0.9, ease: 'power3.out',
+        stagger: 0.09,
+        scrollTrigger: { trigger: card, start: 'top 82%' }
+      });
+      // ゴールド罫線は左から描かれる
+      var rule = card.querySelector('.rule');
+      if (rule) {
+        gsap.to(rule, {
+          width: 56, duration: 0.8, ease: 'power2.inOut', delay: 0.15,
+          scrollTrigger: { trigger: card, start: 'top 78%' }
+        });
+      }
+    });
+
+    // ===== カード: 退場はふわっと浮き上がって薄れる（スクラブで可逆） =====
+    gsap.utils.toArray('.panel').forEach(function (panel) {
+      var card = panel.querySelector('.panel-card');
+      if (!card) return;
+      gsap.to(panel, {
+        autoAlpha: 0.12, y: -46, ease: 'none',
+        scrollTrigger: {
+          trigger: card,
+          start: 'bottom 32%',
+          end: 'bottom -8%',
+          scrub: true
+        }
+      });
+    });
+
+    // ===== ドットナビのアクティブ同期 =====
+    dots.forEach(function (d, i) {
+      ScrollTrigger.create({
+        trigger: d.sec,
+        start: 'top 55%',
+        end: function () {
+          var next = dots[i + 1];
+          return next ? next.sec.offsetTop - window.innerHeight * 0.45 : document.body.scrollHeight;
+        },
+        onToggle: function (self) {
+          if (self.isActive) {
+            dots.forEach(function (x) { x.a.classList.remove('active'); });
+            d.a.classList.add('active');
+          }
+        }
+      });
+    });
+
+    // ===== ヘッダー: スクロールで薄いガラス帯に =====
+    ScrollTrigger.create({
+      start: 60,
+      onUpdate: function (self) {
+        document.getElementById('siteHeader').classList.toggle('scrolled', self.scroll() > 60);
+      }
+    });
+
+    // ===== スクロールヒント =====
+    gsap.to('#scrollHint', {
+      autoAlpha: 0,
+      scrollTrigger: { trigger: '#bloomStage', start: '3% top', end: '6% top', scrub: true }
+    });
+
+    // FV内CTAのアンカーも Lenis 経由に
+    document.querySelectorAll('a[data-scroll]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var target = document.querySelector(a.getAttribute('href'));
+        if (target && lenis) { e.preventDefault(); lenis.scrollTo(target, { duration: 1.8 }); }
+      });
+    });
+  } else {
+    state.frame = FRAME_COUNT - 1;
+  }
+})();
+</script>
+</body>
+</html>
