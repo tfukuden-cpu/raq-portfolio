@@ -1,1 +1,45 @@
-﻿<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=./lumiere/"><title>RAQ LLC Portfolio</title></head><body><a href="./lumiere/">LUMIÈRE — Scroll Demo</a></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAQ LLC — Scroll Motion Portfolio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #0B0B0D; color: #F4F4F6;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    letter-spacing: 0.06em;
+  }
+  .wrap { padding: 8vh 7vw; max-width: 720px; width: 100%; }
+  h1 { font-size: 15px; letter-spacing: 0.4em; color: #A6A6AD; font-weight: 400; margin-bottom: 48px; }
+  a.work {
+    display: block; text-decoration: none; color: #F4F4F6;
+    border: 1px solid rgba(255,255,255,0.12); padding: 28px 32px; margin-bottom: 18px;
+    transition: border-color .3s ease, transform .3s ease;
+  }
+  a.work:hover { border-color: rgba(255,255,255,0.4); transform: translateX(6px); }
+  a.work .t { font-size: 20px; font-weight: 700; letter-spacing: 0.12em; }
+  a.work .d { font-size: 12px; color: #A6A6AD; margin-top: 8px; line-height: 1.9; }
+  footer { margin-top: 56px; font-size: 11px; color: #6E6E76; line-height: 2; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>RAQ LLC — SCROLL MOTION PORTFOLIO</h1>
+    <a class="work" href="./lumiere/">
+      <div class="t">LUMIÈRE</div>
+      <div class="d">スクロールで花が開花するボタニカルセラムLP（白基調・開花スクラブ演出）</div>
+    </a>
+    <a class="work" href="./muze/">
+      <div class="t">MUZE</div>
+      <div class="d">缶が宙に浮かび回転するエナジードリンクLP（黒基調・浮遊回転×ネオンリボン）</div>
+    </a>
+    <footer>
+      掲載ブランドはすべて架空のデモンストレーションです。<br>
+      © RAQ LLC
+    </footer>
+  </div>
+</body>
+</html>
