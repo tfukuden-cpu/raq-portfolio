@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVELY ｜ 指先に、一生もののきらめきを。表参道のプライベートネイルサロン</title>
+<meta name="description" content="1日4組限定・完全予約制のプライベートネイルサロン AVELY。指先を一生もののジュエリーのように仕立てます。※これはRAQ LLC制作のデモンストレーションLPです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --base: #F2F3F0;        /* ベース 70%: 生成画像の背景色に一致させ継ぎ目を消す */
+    --base-pure: #F2F3F0;
+    --main: #C8B6A0;        /* メイン 25%: シャンパントープ */
+    --ink: #211C19;         /* 墨 */
+    --ink-soft: #6E635C;
+    --accent: #8C2D3A;      /* アクセント 5%: ガーネット（CTA専用・ページ内で孤立） */
+    --accent-deep: #6E1F2B;
+    --gold: #B89364;        /* 装飾の真鍮（極細罫・ナンバーのみ） */
+    --serif: 'Shippori Mincho', serif;
+    --sans: 'Zen Kaku Gothic New', sans-serif;
+    --latin: 'Cormorant Garamond', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--base);
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== ヘッダー ===== */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 5vw;
+    transition: background .5s ease, padding .5s ease, box-shadow .5s ease;
+  }
+  .site-header.scrolled {
+    background: rgba(242, 243, 240, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 14px 5vw;
+    box-shadow: 0 1px 0 rgba(33, 28, 25, 0.06);
+  }
+  .brand {
+    font-family: var(--latin); font-size: 24px; letter-spacing: 0.38em;
+    color: var(--ink); text-decoration: none; font-weight: 500;
+  }
+  .header-note { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.1em; }
+
+  /* ===== サイドナビ（ドットメニュー） ===== */
+  .dot-nav {
+    position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+    z-index: 110; display: flex; flex-direction: column; gap: 18px;
+  }
+  .dot-nav a { position: relative; display: block; width: 9px; height: 9px; }
+  .dot-nav a::before {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%; background: #DAD0C4;
+    transition: background .35s ease, transform .35s ease;
+  }
+  .dot-nav a.active::before { background: var(--accent); transform: scale(1.5); }
+  .dot-nav a .label {
+    position: absolute; right: 22px; top: 50%; transform: translateY(-50%) translateX(6px);
+    font-size: 10px; letter-spacing: 0.25em; color: var(--ink-soft);
+    background: rgba(242, 243, 240, 0.88); padding: 4px 10px;
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .dot-nav a:hover .label { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+  /* ===== ステージ: 指先は最後まで固定、カードだけが流れる ===== */
+  .stage { position: relative; }
+
+  .stage-bg {
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden; z-index: 1;
+    background: var(--base-pure);
+  }
+  #stageCanvas { width: 100%; height: 100%; display: block; }
+
+  /* 回転が決まったあとに舞う煌めき（スパークル） */
+  .sparkles { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.4s ease; }
+  .sparkles.show { opacity: 1; }
+  .sparkle {
+    position: absolute;
+    width: 14px; height: 14px;
+    opacity: 0;
+    background:
+      radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 60%);
+    animation: twinkle var(--dur, 3.4s) ease-in-out infinite;
+  }
+  .sparkle::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(transparent 46%, var(--gold) 49.5%, var(--gold) 50.5%, transparent 54%),
+      linear-gradient(90deg, transparent 46%, var(--gold) 49.5%, var(--gold) 50.5%, transparent 54%);
+    filter: drop-shadow(0 0 2px rgba(184,147,100,.6));
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); }
+    50%      { opacity: .9; transform: scale(1) rotate(45deg); }
+  }
+
+  .panels { position: relative; z-index: 5; margin-top: -100vh; }
+  .panel {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 0 7vw;
+  }
+  .panel.tall { min-height: 122vh; }
+
+  /* カードは常にすりガラス（モバイル/中間幅） */
+  .panel-card {
+    width: min(450px, 88vw);
+    background: rgba(242, 243, 240, 0.82);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    padding: 42px 40px;
+    box-shadow: 0 1px 0 rgba(33, 28, 25, 0.05);
+  }
+  .panel--left  .panel-card { margin-right: auto; }
+  .panel--right .panel-card { margin-left: auto; }
+
+  /* 横長画面: 指先は左固定・テキストは右カラム。すりガラス箱を廃止して
+     温白背景に直接タイポグラフィを置く（箱が主役になるのを防ぐ） */
+  @media (min-width: 1101px) and (orientation: landscape) {
+    .panel { padding-right: 9vw; }
+    .panel--left .panel-card, .panel--right .panel-card {
+      margin-left: auto; margin-right: 0;
+      width: min(390px, 33vw);
+      background: transparent;
+      backdrop-filter: none; -webkit-backdrop-filter: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    .closing-card { text-align: left; }
+    .trust { align-items: flex-start; }
+  }
+
+  .panel .en {
+    font-family: var(--latin); font-size: 13px; letter-spacing: 0.4em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 18px; font-weight: 500;
+  }
+  .panel h1, .panel h2 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(26px, 3vw, 42px); line-height: 1.55; letter-spacing: 0.1em;
+  }
+  .panel p { margin-top: 20px; font-size: 14px; line-height: 2.0; color: var(--ink-soft); }
+
+  /* 約束カード: 真鍮の罫線が引かれてから数字が出る */
+  .panel .rule { width: 0; height: 1px; background: var(--gold); margin-bottom: 22px; }
+  .panel .num { font-family: var(--latin); font-size: 36px; color: var(--gold); margin-bottom: 8px; font-weight: 500; }
+  .panel h3 { font-family: var(--serif); font-weight: 500; font-size: clamp(21px, 2.2vw, 28px); letter-spacing: 0.1em; line-height: 1.7; }
+
+  /* メニュー / 料金 */
+  .menu-list { margin-top: 26px; display: flex; flex-direction: column; gap: 16px; }
+  .menu-item { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-bottom: 1px dotted rgba(110,99,92,.35); padding-bottom: 12px; }
+  .menu-item .nm { font-family: var(--serif); font-size: 16px; letter-spacing: 0.08em; color: var(--ink); }
+  .menu-item .nm small { display: block; font-family: var(--sans); font-size: 11px; color: var(--ink-soft); letter-spacing: .08em; margin-top: 3px; }
+  .menu-item .pr { font-family: var(--latin); font-size: 21px; color: var(--ink); white-space: nowrap; }
+
+  .quote-card blockquote {
+    font-family: var(--serif); font-size: clamp(19px, 2vw, 25px);
+    line-height: 1.95; letter-spacing: 0.12em; font-weight: 400;
+  }
+  .quote-card cite { display: block; margin-top: 24px; font-style: normal; font-size: 12px; color: var(--ink-soft); letter-spacing: 0.18em; }
+  .stars { color: var(--gold); letter-spacing: .3em; font-size: 13px; margin-bottom: 16px; }
+
+  .closing-card { text-align: center; }
+  .closing-card .price { margin-top: 26px; font-size: 14px; color: var(--ink-soft); letter-spacing: 0.12em; }
+  .closing-card .price strong { font-family: var(--latin); font-size: 32px; color: var(--ink); font-weight: 500; letter-spacing: 0.04em; }
+  .closing-card .price .was { text-decoration: line-through; opacity: .6; margin-right: 10px; font-size: 13px; }
+  .trust { display: flex; flex-direction: column; gap: 8px; margin-top: 28px; font-size: 12px; color: var(--ink-soft); letter-spacing: 0.08em; }
+
+  /* FAQ */
+  .faq-item { border-top: 1px solid rgba(110,99,92,.18); padding: 18px 0; }
+  .faq-item:last-child { border-bottom: 1px solid rgba(110,99,92,.18); }
+  .faq-item .q { font-family: var(--serif); font-size: 15px; letter-spacing: .06em; color: var(--ink); position: relative; padding-left: 26px; }
+  .faq-item .q::before { content: 'Q'; font-family: var(--latin); position: absolute; left: 0; top: -2px; color: var(--gold); font-size: 18px; }
+  .faq-item .a { margin-top: 10px; font-size: 13px; color: var(--ink-soft); line-height: 1.9; padding-left: 26px; }
+
+  .scroll-hint {
+    position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.3em; color: var(--ink-soft);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .scroll-hint::after {
+    content: ''; width: 1px; height: 44px; background: var(--ink-soft);
+    animation: drop 1.8s ease-in-out infinite;
+  }
+  @keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  /* ===== CTAボタン（ガーネット・ページ内で唯一のアクセント色） ===== */
+  .cta {
+    position: relative; overflow: hidden;
+    display: inline-block; margin-top: 30px;
+    padding: 18px 50px; min-height: 44px;
+    background: var(--accent); color: #fff;
+    font-family: var(--sans); font-weight: 400; font-size: 15px; letter-spacing: 0.18em;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: letter-spacing .4s ease;
+  }
+  .cta::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--accent-deep);
+    transform: translateX(-101%);
+    transition: transform .45s cubic-bezier(.4, 0, .2, 1);
+  }
+  .cta:hover { letter-spacing: 0.26em; }
+  .cta:hover::after { transform: translateX(0); }
+  .cta span { position: relative; z-index: 1; }
+  .cta-micro { display: block; margin-top: 12px; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.1em; }
+
+  /* ===== フッター ===== */
+  .site-footer {
+    position: relative; z-index: 5;
+    padding: 44px 7vw 36px; text-align: center;
+    font-size: 11px; color: var(--ink-soft); letter-spacing: 0.1em; line-height: 2.2;
+    background: rgba(242, 243, 240, 0.88);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+  }
+
+  /* ===== ローディング ===== */
+  #loader {
+    position: fixed; inset: 0; z-index: 200; background: var(--base);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 18px;
+    transition: opacity .6s ease;
+  }
+  #loader .brand-load { font-family: var(--latin); font-size: 28px; letter-spacing: 0.42em; color: var(--ink); font-weight: 500; }
+  #loader .sub-load { font-size: 10px; letter-spacing: .3em; color: var(--ink-soft); }
+  #loader .bar { width: 160px; height: 1px; background: #E7DECF; overflow: hidden; }
+  #loader .bar i { display: block; height: 100%; width: 0%; background: var(--gold); transition: width .2s; }
+  #loader.done { opacity: 0; pointer-events: none; }
+
+  /* ===== モバイル ===== */
+  @media (max-width: 768px) {
+    .panel { padding: 0 6vw; }
+    .panel--left .panel-card, .panel--right .panel-card { margin-left: auto; margin-right: auto; }
+    .dot-nav { right: 12px; gap: 14px; }
+    .dot-nav a .label { display: none; }
+    .trust { gap: 10px; }
+    body { font-size: 16px; }
+    .header-note { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage-bg { position: relative; height: 64vh; }
+    .panels { margin-top: 0; }
+    .panel, .panel.tall { min-height: auto; padding: 56px 7vw; }
+    .scroll-hint, .sparkles, .dot-nav { display: none; }
+    .panel .rule { width: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="brand-load">AVELY</div>
+  <div class="sub-load">PRIVATE NAIL ATELIER</div>
+  <div class="bar"><i id="loadBar"></i></div>
+</div>
+
+<header class="site-header" id="siteHeader">
+  <a class="brand" href="#">AVELY</a>
+  <span class="header-note">DEMO — RAQ LLC PORTFOLIO</span>
+</header>
+
+<nav class="dot-nav" id="dotNav" aria-label="ページ内ナビゲーション"></nav>
+
+<!-- ===== ステージ: ページ全体がひとつの物語（指先が回り続ける） ===== -->
+<div class="stage" id="stage">
+
+  <div class="stage-bg">
+    <canvas id="stageCanvas"></canvas>
+    <div class="sparkles" id="sparkles"></div>
+    <div class="scroll-hint" id="scrollHint">SCROLL</div>
+  </div>
+
+  <div class="panels">
+
+    <!-- FV -->
+    <section class="panel panel--right" id="panelFv" data-nav="Top">
+      <div class="panel-card">
+        <div class="en">Private Nail Atelier ｜ Omotesando</div>
+        <h1>指先に、<br>一生もののきらめきを。</h1>
+        <p>1日4組だけの、完全予約制プライベートサロン。<br>あなたの手に合わせて、指先をひとつのジュエリーに仕立てます。</p>
+        <a class="cta" href="#reserve" data-scroll><span>無料カウンセリングを予約する</span></a>
+        <span class="cta-micro">初回限定・所要60分／無理な勧誘は一切ありません</span>
+      </div>
+    </section>
+
+    <!-- Problem / Affinity -->
+    <section class="panel panel--right tall" data-nav="Story">
+      <div class="panel-card">
+        <div class="en">Why AVELY</div>
+        <h2>ふと見た自分の指先に、<br>自信が持てない日がある。</h2>
+        <p>すぐ取れてしまう。なんだか野暮ったい。サロンに行っても、流れ作業で自分の手と向き合ってもらえなかった——。</p>
+        <p>AVELYは、その小さな引っかかりをほどくためのサロンです。スクロールするほど、指先がゆっくり表情を変えていきます。</p>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="panel panel--right tall" data-nav="Salon">
+      <div class="panel-card">
+        <div class="en">The AVELY Way</div>
+        <h2>急がない。<br>あなたの手だけを、見る時間。</h2>
+        <p>爪の形、甘皮、ライフスタイル。一人ひとり違う手を丁寧に読み解き、いちばん美しく見える設計を一緒に決めていきます。</p>
+        <a class="cta" href="#reserve" data-scroll><span>無料カウンセリングを予約する</span></a>
+        <span class="cta-micro">まずは手の状態を見せてください。提案は無料です</span>
+      </div>
+    </section>
+
+    <!-- Promise 01 -->
+    <section class="panel panel--right" data-nav="Promise">
+      <div class="panel-card">
+        <div class="en">Our Promise</div>
+        <div class="rule"></div>
+        <div class="num">01</div>
+        <h3>完全個室・1日4組限定</h3>
+        <p>路面から見えない完全個室。ほかのお客様と顔を合わせることはありません。ゆったりとした椅子で、施術そのものを休息の時間に。</p>
+      </div>
+    </section>
+
+    <!-- Promise 02 -->
+    <section class="panel panel--right">
+      <div class="panel-card">
+        <div class="en">Our Promise</div>
+        <div class="rule"></div>
+        <div class="num">02</div>
+        <h3>一生ものの“似合う”を設計</h3>
+        <p>流行を追うだけでなく、手の形・肌色・指の長さから「あなたに一生似合う型」を見つけます。写真だけの持ち込みでも大丈夫です。</p>
+      </div>
+    </section>
+
+    <!-- Promise 03 -->
+    <section class="panel panel--right">
+      <div class="panel-card">
+        <div class="en">Our Promise</div>
+        <div class="rule"></div>
+        <div class="num">03</div>
+        <h3>パラジェル・徹底した衛生管理</h3>
+        <p>爪を削らないパラジェルを採用。器具は一施術ごとに滅菌し、自爪の健康を最優先します。持ちの良さにも自信があります。</p>
+      </div>
+    </section>
+
+    <!-- Offer / Menu -->
+    <section class="panel panel--right tall" data-nav="Menu">
+      <div class="panel-card">
+        <div class="en">Trial &amp; Menu</div>
+        <h2>はじめての方へ。</h2>
+        <div class="menu-list">
+          <div class="menu-item">
+            <span class="nm">初回ワンカラー／ニュアンス<small>カウンセリング＋ケア込み・60分</small></span>
+            <span class="pr">¥6,600</span>
+          </div>
+          <div class="menu-item">
+            <span class="nm">デザインコース<small>アート・ストーン込み・90分</small></span>
+            <span class="pr">¥9,900</span>
+          </div>
+          <div class="menu-item">
+            <span class="nm">ブライダル／記念日<small>完全オーダーメイド・120分</small></span>
+            <span class="pr">¥14,300</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof / Voice -->
+    <section class="panel panel--right" data-nav="Voice">
+      <div class="panel-card quote-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>「自分の手って、<br>こんなにきれいだったんだ。」</blockquote>
+        <cite>— 30代・経営者／初回ご来店（※架空のデモコメントです）</cite>
+      </div>
+    </section>
+
+    <!-- Narrowing（回転が決まる地点） -->
+    <section class="panel panel--right tall" id="panelSettle" data-nav="Reserve">
+      <div class="panel-card closing-card">
+        <div class="en">Limited Invitation</div>
+        <h2>今月の初回枠は、<br>残りわずかです。</h2>
+        <p class="price"><span class="was">¥8,800</span><strong>¥6,600</strong>（初回ワンカラー・税込）</p>
+        <a class="cta" href="#" onclick="return false;"><span>無料カウンセリングを予約する</span></a>
+        <span class="cta-micro">ご予約フォームは30秒・前日まで無料でキャンセル可能</span>
+        <div class="trust">
+          <span>✓ 仕上がり7日以内のお直し無料</span>
+          <span>✓ 器具は一施術ごとに滅菌</span>
+          <span>✓ 自爪を削らないパラジェル</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="panel panel--right tall" id="closing">
+      <div class="panel-card">
+        <div class="en">FAQ</div>
+        <div class="faq-item">
+          <div class="q">所要時間はどのくらいですか？</div>
+          <div class="a">初回はカウンセリング込みで60〜90分です。お時間に余裕を持ってお越しください。</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">どのくらい持ちますか？</div>
+          <div class="a">通常3〜4週間が目安です。生活スタイルに合わせて持ちを高める仕上げをご提案します。</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">自爪が傷みませんか？</div>
+          <div class="a">爪を削らないパラジェルを使用し、オフも丁寧に行うため自爪への負担を最小限に抑えます。</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">キャンセルはできますか？</div>
+          <div class="a">前日までは無料です。当日キャンセルのみ規定料金を頂戴しております。</div>
+        </div>
+        <a class="cta" href="#" onclick="return false;" style="margin-top:34px;"><span>無料カウンセリングを予約する</span></a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    AVELY は実在しない架空のブランドです。<br>
+    本ページは RAQ LLC がスクロール連動演出のデモンストレーションとして制作したポートフォリオ作品です。<br>
+    モデル・ネイル画像はAIによる生成、人物・実績・口コミはすべて架空です。<br>
+    © RAQ LLC
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  gsap.registerPlugin(ScrollTrigger);
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== Lenis 慣性スムーススクロール =====
+  var lenis = null;
+  if (!reduceMotion && typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // ===== フレーム設定（assets/frames の実フレーム数） =====
+  var FRAME_COUNT = 145;
+  var FRAME_PATH = function (i) {
+    return 'assets/frames/frame_' + String(i + 1).padStart(4, '0') + '.webp';
+  };
+
+  var canvas = document.getElementById('stageCanvas');
+  var ctx = canvas.getContext('2d');
+  var images = new Array(FRAME_COUNT);
+  var loaded = 0;
+  var state = { frame: 0, zoom: 0 }; // zoom: 0→1 でゆっくり寄る
+
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    render();
+  }
+
+  // 描画: デスクトップは指先を左に寄せて右をテキスト用の余白にする。
+  // モバイルは中央 cover。どちらもスロードリーイン付き。
+  function render() {
+    var img = images[Math.round(state.frame)];
+    if (!img || !img.complete || !img.naturalWidth) return;
+    var cw = canvas.width, ch = canvas.height;
+    var ir = img.naturalWidth / img.naturalHeight;
+    var cr = cw / ch;
+    var dw, dh, dx, dy;
+    // CSSのレイアウト切替（min-width:1101px + landscape）と必ず同じ条件で判定する
+    var splitLayout = canvas.clientWidth >= 1101 && cr >= 1.05;
+    if (splitLayout) {
+      // 分割構図: 横長の手はビューポート幅いっぱいに広がるため、cover せず
+      // 画像幅を ~62% にコンテインして左に寄せ、右 ~38% を確実に白く残す
+      //（背景は純白なので上下のレターボックスは見えない）。
+      var scale = 0.62 + state.zoom * 0.03;
+      dw = cw * scale; dh = dw / ir;
+      dx = -cw * 0.05;                      // ごく僅かに左へブリード
+      dy = (ch - dh) / 2;                   // 縦中央
+    } else {
+      var scaleM = 1 + state.zoom * 0.08;
+      if (cr > ir) { dw = cw * scaleM; dh = dw / ir; }
+      else { dh = ch * scaleM; dw = dh * ir; }
+      dx = (cw - dw) / 2;
+      dy = (ch - dh) / 2;
+    }
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  function onFrameLoaded(idx) {
+    loaded++;
+    document.getElementById('loadBar').style.width = (loaded / FRAME_COUNT * 100) + '%';
+    if (loaded === 1) { sizeCanvas(); }
+    if (idx === Math.round(state.frame)) { render(); }
+    if (loaded >= FRAME_COUNT) {
+      document.getElementById('loader').classList.add('done');
+      ScrollTrigger.refresh();
+      render();
+    }
+  }
+
+  for (var i = 0; i < FRAME_COUNT; i++) {
+    (function (idx) {
+      var img = new Image();
+      img.onload = function () { onFrameLoaded(idx); };
+      img.onerror = function () {
+        console.error('frame load failed: ' + FRAME_PATH(idx));
+        onFrameLoaded(idx);
+      };
+      img.src = FRAME_PATH(idx);
+      images[idx] = img;
+    })(i);
+  }
+
+  window.addEventListener('resize', sizeCanvas);
+
+  // ===== 煌めき（スパークル）を生成。回転が決まったあとに表示 =====
+  // 指先のある左側ゾーンにだけ散らす（テキストや余白にノイズとして被らせない）
+  var sparkleBox = document.getElementById('sparkles');
+  var spots = [
+    [14, 34], [22, 22], [9, 52], [28, 44], [18, 60], [25, 70], [11, 40]
+  ];
+  for (var s = 0; s < spots.length; s++) {
+    var el = document.createElement('i');
+    el.className = 'sparkle';
+    el.style.left = spots[s][0] + 'vw';
+    el.style.top = spots[s][1] + 'vh';
+    el.style.setProperty('--dur', (2.8 + (s % 4) * 0.6) + 's');
+    el.style.animationDelay = (s * 0.45) + 's';
+    el.style.transform = 'scale(' + (0.6 + (s % 3) * 0.3) + ')';
+    sparkleBox.appendChild(el);
+  }
+
+  // ===== ドットナビ生成 =====
+  var dotNav = document.getElementById('dotNav');
+  var navTargets = document.querySelectorAll('[data-nav]');
+  var dots = [];
+  navTargets.forEach(function (sec) {
+    var a = document.createElement('a');
+    a.href = '#' + (sec.id || '');
+    var label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = sec.getAttribute('data-nav');
+    a.appendChild(label);
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (lenis) { lenis.scrollTo(sec, { duration: 1.6 }); }
+      else { sec.scrollIntoView({ behavior: 'smooth' }); }
+    });
+    dotNav.appendChild(a);
+    dots.push({ a: a, sec: sec });
+  });
+
+  if (!reduceMotion) {
+    // ===== スクロール ⇔ 回転フレーム同期（Narrowingパネルで完了） =====
+    gsap.to(state, {
+      frame: FRAME_COUNT - 1,
+      ease: 'none',
+      snap: 'frame',
+      scrollTrigger: {
+        trigger: '#stage',
+        start: 'top top',
+        endTrigger: '#panelSettle',
+        end: 'center center',
+        scrub: 0.5,
+        onLeave: function () { sparkleBox.classList.add('show'); },
+        onEnterBack: function () { sparkleBox.classList.remove('show'); }
+      },
+      onUpdate: render
+    });
+
+    // ===== 背景のスロードリーイン（ページ全体で 0→1） =====
+    gsap.to(state, {
+      zoom: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#stage',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.2
+      },
+      onUpdate: render
+    });
+
+    // ===== カード: 中身が時間差で立ち上がる入場 =====
+    gsap.utils.toArray('.panel-card').forEach(function (card) {
+      var children = card.querySelectorAll(':scope > *');
+      gsap.from(children, {
+        autoAlpha: 0, y: 34, duration: 0.9, ease: 'power3.out',
+        stagger: 0.09,
+        scrollTrigger: { trigger: card, start: 'top 82%' }
+      });
+      // 真鍮の罫線は左から描かれる
+      var rule = card.querySelector('.rule');
+      if (rule) {
+        gsap.to(rule, {
+          width: 56, duration: 0.8, ease: 'power2.inOut', delay: 0.15,
+          scrollTrigger: { trigger: card, start: 'top 78%' }
+        });
+      }
+    });
+
+    // ===== カード: 退場はふわっと浮き上がって薄れる（スクラブで可逆） =====
+    gsap.utils.toArray('.panel').forEach(function (panel) {
+      var card = panel.querySelector('.panel-card');
+      if (!card) return;
+      gsap.to(panel, {
+        autoAlpha: 0.12, y: -46, ease: 'none',
+        scrollTrigger: {
+          trigger: card,
+          start: 'bottom 32%',
+          end: 'bottom -8%',
+          scrub: true
+        }
+      });
+    });
+
+    // ===== ドットナビのアクティブ同期 =====
+    dots.forEach(function (d, i) {
+      ScrollTrigger.create({
+        trigger: d.sec,
+        start: 'top 55%',
+        end: function () {
+          var next = dots[i + 1];
+          return next ? next.sec.offsetTop - window.innerHeight * 0.45 : document.body.scrollHeight;
+        },
+        onToggle: function (self) {
+          if (self.isActive) {
+            dots.forEach(function (x) { x.a.classList.remove('active'); });
+            d.a.classList.add('active');
+          }
+        }
+      });
+    });
+
+    // ===== ヘッダー: スクロールで薄いガラス帯に =====
+    ScrollTrigger.create({
+      start: 60,
+      onUpdate: function (self) {
+        document.getElementById('siteHeader').classList.toggle('scrolled', self.scroll() > 60);
+      }
+    });
+
+    // ===== スクロールヒント =====
+    gsap.to('#scrollHint', {
+      autoAlpha: 0,
+      scrollTrigger: { trigger: '#stage', start: '3% top', end: '6% top', scrub: true }
+    });
+
+    // FV内CTAのアンカーも Lenis 経由に
+    document.querySelectorAll('a[data-scroll]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var target = document.querySelector(a.getAttribute('href'));
+        if (target && lenis) { e.preventDefault(); lenis.scrollTo(target, { duration: 1.8 }); }
+      });
+    });
+  } else {
+    state.frame = FRAME_COUNT - 1;
+  }
+})();
+</script>
+</body>
+</html>
